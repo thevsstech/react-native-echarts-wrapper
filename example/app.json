@@ -1,0 +1,22 @@
+{
+  "name": "@thevsstech/react-native-echarts-wrapper-example",
+  "displayName": "ReactNativeEchartsWrapper Example",
+  "expo": {
+    "name": "@thevsstech/react-native-echarts-wrapper-example",
+    "slug": "thevsstech-react-native-echarts-wrapper-example",
+    "description": "Example app for @thevsstech/react-native-echarts-wrapper",
+    "privacy": "public",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
