@@ -124,6 +124,7 @@ class ECharts extends PureComponent<Props> {
       source = {
         html: this.html,
         baseUrl: ""
+
       };
     }
 
