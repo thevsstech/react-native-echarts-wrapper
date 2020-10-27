@@ -1,36 +1,34 @@
-import React, {  PureComponent } from 'react';
-import { View } from "react-native";
-import { WebView } from "react-native-webview";
+import React, { PureComponent } from 'react';
+import { View } from 'react-native';
+import { WebView, WebViewProps } from 'react-native-webview';
 
-import * as jsBuilder from "./jsBuilder";
+import * as jsBuilder from './jsBuilder';
 
-
-type Props = {
-  onData ?: (payload ?: any) => void,
-  canvas ?: boolean,
-  onLoadEnd ?: void,
-  backgroundColor ?: string
-}
+type Props = WebViewProps & {
+  onData?: (payload?: any) => void;
+  canvas?: boolean;
+  onLoadEnd?: () => void;
+  backgroundColor?: string;
+};
 
 class ECharts extends PureComponent<Props> {
-  callbacks: Record<string, any>
-  onGetHeight ?: () => void
-  webview : typeof WebView
+  callbacks: Record<string, any>;
+  onGetHeight?: () => void;
+  webview: WebView | undefined;
   static defaultProps = {
     onData: () => {},
     canvas: false,
     onLoadEnd: () => {},
-    backgroundColor: "rgba(0, 0, 0, 0)"
+    backgroundColor: 'rgba(0, 0, 0, 0)',
   };
 
   constructor(props: Props) {
     super(props);
     this.onGetHeight = undefined;
-    this.callbacks = {} ;
-    this.webview = null
+    this.callbacks = {};
   }
 
-  onMessage = (e ?: {nativeEvent: {data: string}}) => {
+  onMessage = (e?: { nativeEvent: { data: string } }) => {
     try {
       if (!e) return null;
 
@@ -38,7 +36,7 @@ class ECharts extends PureComponent<Props> {
 
       const data = JSON.parse(unescape(unescape(e.nativeEvent.data)));
 
-      if (data.types === "DATA") {
+      if (data.types === 'DATA') {
         if (onData) {
           onData(data.payload);
         }
@@ -52,57 +50,56 @@ class ECharts extends PureComponent<Props> {
       console.log(error);
     }
 
-    return null
+    return null;
   };
 
-  postMessage = data => {
-    this.webview.postMessage(jsBuilder.convertToPostMessageString(data));
+  postMessage = (data: any) => {
+    if (this.webview) {
+      this.webview.postMessage(jsBuilder.convertToPostMessageString(data));
+    }
   };
 
-  ID = () =>
-    `_${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
+  ID = () => `_${Math.random().toString(36).substr(2, 9)}`;
 
-  setBackgroundColor = color => {
+  setBackgroundColor = (color: string) => {
     const data = {
-      types: "SET_BACKGROUND_COLOR",
-      color
+      types: 'SET_BACKGROUND_COLOR',
+      color,
     };
     this.postMessage(data);
   };
 
-  getOption = (callback, properties = undefined) => {
+  getOption = (callback: () => any, properties = undefined) => {
     const uuid = this.ID();
     this.callbacks[uuid] = callback;
     const data = {
-      types: "GET_OPTION",
+      types: 'GET_OPTION',
       uuid,
-      properties
+      properties,
     };
     this.postMessage(data);
   };
 
-  setOption = (option, notMerge, lazyUpdate) => {
+  setOption = (option: string, notMerge: boolean, lazyUpdate: boolean) => {
     const data = {
-      types: "SET_OPTION",
+      types: 'SET_OPTION',
       payload: {
         option,
         notMerge: notMerge || false,
-        lazyUpdate: lazyUpdate || false
-      }
+        lazyUpdate: lazyUpdate || false,
+      },
     };
     this.postMessage(data);
   };
 
   clear = () => {
     const data = {
-      types: "CLEAR"
+      types: 'CLEAR',
     };
     this.postMessage(data);
   };
 
-  getWebViewRef = ref => {
+  getWebViewRef = (ref: WebView) => {
     this.webview = ref;
   };
 
@@ -110,36 +107,23 @@ class ECharts extends PureComponent<Props> {
     if (this.webview) {
       this.webview.injectJavaScript(jsBuilder.getJavascriptSource(this.props));
     }
-    this.props.onLoadEnd();
+    if (this.props.onLoadEnd) {
+      this.props.onLoadEnd();
+    }
   };
 
   render() {
-    let source = {};
-
-    if (this.props.customTemplatePath) {
-      source = {
-        uri: this.props.customTemplatePath
-      };
-    } else {
-      source = {
-        html: this.html,
-        baseUrl: ""
-
-      };
-    }
-
     return (
       <View style={{ flex: 1 }}>
         <WebView
+          {...this.props}
           ref={this.getWebViewRef}
-          originWhitelist={["*"]}
+          originWhitelist={['*']}
           scrollEnabled={false}
-          source={source}
           onMessage={this.onMessage}
           allowFileAccess
           allowUniversalAccessFromFileURLs
           mixedContentMode="always"
-          onLoadEnd={this.onLoadEnd}
         />
       </View>
     );
