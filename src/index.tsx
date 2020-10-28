@@ -11,6 +11,10 @@ type Props = WebViewProps & {
   backgroundColor?: string;
 };
 
+const styles = {
+  container: { flex: 1 },
+};
+
 class ECharts extends PureComponent<Props> {
   callbacks: Record<string, any>;
   onGetHeight?: () => void;
@@ -41,9 +45,7 @@ class ECharts extends PureComponent<Props> {
           onData(data.payload);
         }
       } else if (data.types === 'CALLBACK') {
-        /* eslint-disable no-case-declarations */
         const { uuid } = data;
-        /* eslint-enable no-case-declarations */
         this.callbacks[uuid](data.payload);
       }
     } catch (error) {
@@ -114,7 +116,7 @@ class ECharts extends PureComponent<Props> {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <WebView
           {...this.props}
           ref={this.getWebViewRef}
@@ -124,6 +126,7 @@ class ECharts extends PureComponent<Props> {
           allowFileAccess
           allowUniversalAccessFromFileURLs
           mixedContentMode="always"
+          onLoadEnd={this.onLoadEnd}
         />
       </View>
     );
