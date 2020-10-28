@@ -4,11 +4,13 @@ import { WebView, WebViewProps } from 'react-native-webview';
 
 import * as jsBuilder from './jsBuilder';
 
-type Props = WebViewProps & {
+export type Props = WebViewProps & {
   onData?: (payload?: any) => void;
   canvas?: boolean;
   onLoadEnd?: () => void;
   backgroundColor?: string;
+  option: Record<string, any>;
+  additionalCode?: string;
 };
 
 const styles = {

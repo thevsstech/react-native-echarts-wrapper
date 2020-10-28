@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import type { Props } from './index';
 
 export const convertToPostMessageString = (obj: Record<any, any>) => {
   return JSON.stringify(obj, (_key, val) => {
@@ -21,7 +22,7 @@ export const toString = (obj: Object) => {
   });
 };
 
-export const getJavascriptSource = (props: Record<string, any>) => {
+export const getJavascriptSource = (props: Props) => {
   const { OS } = Platform;
   const renderer = 'canvas';
 
