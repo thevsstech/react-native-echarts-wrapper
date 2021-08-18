@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
+// @ts-ignore
 import { WebView, WebViewProps } from 'react-native-webview';
 
 import * as jsBuilder from './jsBuilder';
@@ -27,6 +28,12 @@ class ECharts extends PureComponent<Props> {
     onLoadEnd: () => {},
     backgroundColor: 'rgba(0, 0, 0, 0)',
   };
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.option !== this.props.option && this.props.option) {
+      this.webview.injectJavaScript(jsBuilder.getJavascriptSource(this.props));
+    }
+  }
 
   constructor(props: Props) {
     super(props);

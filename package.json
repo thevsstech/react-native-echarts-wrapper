@@ -1,6 +1,6 @@
 {
   "name": "@thevsstech/react-native-echarts-wrapper",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "echarts wrapper for react native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
